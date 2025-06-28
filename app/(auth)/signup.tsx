@@ -57,7 +57,6 @@ export default function SignUpScreen() {
         Alert.alert('Success', 'Account created successfully! Please sign in.');
         router.replace('/(auth)/signin');
       } catch (error: any) {
-        console.error('Sign Up Error:', error);
         Alert.alert('Sign Up Failed', error.message || 'An unexpected error occurred.');
       } finally {
         setSubmitting(false);
