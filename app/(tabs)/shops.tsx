@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Filter, MapPin } from 'lucide-react-native';
-import { colors } from '@/constants/colors';
-import { globalStyles } from '@/constants/styles';
-import { mockSalons } from '@/data/mockData';
-import { SalonCard } from '@/components/salon/SalonCard';
-import { SearchBar } from '@/components/ui/SearchBar';
-import { Button } from '@/components/ui/Button';
+import { colors } from 'constants/colors';
+import { globalStyles } from 'constants/styles';
+import { mockSalons } from 'data/mockData';
+import { SalonCard } from 'components/salon/SalonCard';
+import { Button } from 'components/ui/Button';
+import { SearchBar } from 'components/ui/SearchBar';
 
 export default function ShopsScreen() {
   const [searchQuery, setSearchQuery] = useState('');

@@ -1,12 +1,11 @@
 import { useEffect } from 'react';
-import { Stack } from 'expo-router';
+import { Stack,SplashScreen } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useFonts, Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold } from '@expo-google-fonts/inter';
-import { SplashScreen } from 'expo-router';
 import { Provider } from 'react-redux';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useFrameworkReady } from '@/hooks/useFrameworkReady';
-import { store } from '@/store/store';
+import { useFrameworkReady } from 'hooks/useFrameworkReady';
+import { store } from 'store/store';
 
 // Prevent splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();

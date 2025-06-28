@@ -3,14 +3,14 @@ import { View, Text, StyleSheet, ScrollView, RefreshControl } from 'react-native
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { MapPin, Bell } from 'lucide-react-native';
-import { colors } from '@/constants/colors';
-import { globalStyles } from '@/constants/styles';
-import { RootState } from '@/store/store';
-import { setSalons, setFeaturedSalons } from '@/store/slices/salonSlice';
-import { mockSalons } from '@/data/mockData';
-import { SalonCard } from '@/components/salon/SalonCard';
-import { FeaturedCarousel } from '@/components/salon/FeaturedCarousel';
-import { SearchBar } from '@/components/ui/SearchBar';
+import { colors } from 'constants/colors';
+import { globalStyles } from 'constants/styles';
+import { RootState } from 'store/store';
+import { setFeaturedSalons, setSalons } from 'store/slices/salonSlice';
+import { mockSalons } from 'data/mockData';
+import { SalonCard } from 'components/salon/SalonCard';
+import { FeaturedCarousel } from 'components/salon/FeaturedCarousel';
+import { SearchBar } from 'components/ui/SearchBar';
 
 export default function HomeScreen() {
   const dispatch = useDispatch();

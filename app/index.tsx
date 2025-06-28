@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { router } from 'expo-router';
 import { useSelector } from 'react-redux';
-import { RootState } from '@/store/store';
+import { RootState } from 'store/store';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
-import { colors } from '@/constants/colors';
+import { colors } from 'constants/colors';
 
 export default function Index() {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);

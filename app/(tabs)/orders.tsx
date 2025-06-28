@@ -3,12 +3,12 @@ import { View, Text, StyleSheet, ScrollView, RefreshControl } from 'react-native
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { Calendar, Clock } from 'lucide-react-native';
-import { colors } from '@/constants/colors';
-import { globalStyles } from '@/constants/styles';
-import { RootState } from '@/store/store';
-import { setBookings } from '@/store/slices/bookingSlice';
-import { mockBookings } from '@/data/mockData';
-import { BookingCard } from '@/components/booking/BookingCard';
+import { colors } from 'constants/colors';
+import { globalStyles } from 'constants/styles';
+import { RootState } from 'store/store';
+import { setBookings } from 'store/slices/bookingSlice';
+import { mockBookings } from 'data/mockData';
+import { BookingCard } from 'components/booking/BookingCard';
 
 export default function OrdersScreen() {
   const dispatch = useDispatch();

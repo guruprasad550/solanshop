@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Calendar, Clock, User, MapPin } from 'lucide-react-native';
-import { colors } from '@/constants/colors';
-import { globalStyles } from '@/constants/styles';
-import { Button } from '@/components/ui/Button';
-import type { Booking } from '@/types/salon';
+import { colors } from 'constants/colors';
+import { globalStyles } from 'constants/styles';
+import { Button } from 'components/ui/Button';
+import { Booking } from 'types/salon';
 
 interface BookingCardProps {
   booking: Booking;

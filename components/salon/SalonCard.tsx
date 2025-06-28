@@ -2,9 +2,9 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { router } from 'expo-router';
 import { Star, MapPin, Clock, Users } from 'lucide-react-native';
-import { colors } from '@/constants/colors';
-import { globalStyles } from '@/constants/styles';
-import type { Salon } from '@/types/salon';
+import { colors } from 'constants/colors';
+import { globalStyles } from 'constants/styles';
+import { Salon } from 'types/salon';
 
 interface SalonCardProps {
   salon: Salon;

@@ -1,59 +1,38 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet, ViewStyle } from 'react-native';
-import { colors } from '@/constants/colors';
+import { View, Text, TextInput, StyleSheet, TextInputProps } from 'react-native';
+import { colors } from 'constants/colors';
 
-interface InputProps {
-  label?: string;
-  value: string;
-  onChangeText: (text: string) => void;
-  placeholder?: string;
-  secureTextEntry?: boolean;
-  keyboardType?: 'default' | 'email-address' | 'numeric' | 'phone-pad';
-  autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
-  style?: ViewStyle;
+interface InputProps extends TextInputProps {
+  label: string;
   leftIcon?: React.ReactNode;
-  rightIcon?: React.ReactNode;
-  error?: string;
+  error?: boolean;
+  errorMessage?: string;
+  style?: object;
 }
 
-export function Input({
-  label,
-  value,
-  onChangeText,
-  placeholder,
-  secureTextEntry = false,
-  keyboardType = 'default',
-  autoCapitalize = 'sentences',
-  style,
-  leftIcon,
-  rightIcon,
-  error,
-}: InputProps) {
+export function Input({ label, leftIcon, error, errorMessage, style, ...props }: InputProps) {
   return (
     <View style={[styles.container, style]}>
-      {label && <Text style={styles.label}>{label}</Text>}
-      <View style={[styles.inputContainer, error && styles.errorContainer]}>
-        {leftIcon && <View style={styles.leftIcon}>{leftIcon}</View>}
+      <Text style={styles.label}>{label}</Text>
+      <View style={[styles.inputContainer, error && styles.inputContainerError]}>
+        {leftIcon && <View style={styles.iconContainer}>{leftIcon}</View>}
         <TextInput
-          style={[styles.input, leftIcon && styles.inputWithLeftIcon, rightIcon && styles.inputWithRightIcon]}
-          value={value}
-          onChangeText={onChangeText}
-          placeholder={placeholder}
+          style={styles.input}
           placeholderTextColor={colors.neutral[400]}
-          secureTextEntry={secureTextEntry}
-          keyboardType={keyboardType}
-          autoCapitalize={autoCapitalize}
+          {...props}
         />
-        {rightIcon && <View style={styles.rightIcon}>{rightIcon}</View>}
       </View>
-      {error && <Text style={styles.errorText}>{error}</Text>}
+      {/* Conditionally render the error message when it exists */}
+      {errorMessage && (
+        <Text style={styles.errorMessage}>{errorMessage}</Text>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 16,
+    width: '100%',
   },
   label: {
     fontFamily: 'Inter-Medium',
@@ -64,38 +43,30 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.neutral[300],
+    backgroundColor: colors.neutral[50],
     borderRadius: 8,
-    backgroundColor: colors.white,
+    borderWidth: 1,
+    borderColor: colors.neutral[200],
+    height: 52,
   },
-  errorContainer: {
-    borderColor: colors.error[500],
+  inputContainerError: {
+    borderColor: colors.danger?.[500] || '#EF4444', // Red border for error
+  },
+  iconContainer: {
+    paddingLeft: 16,
+    paddingRight: 12,
   },
   input: {
     flex: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
     fontFamily: 'Inter-Regular',
     fontSize: 16,
     color: colors.neutral[900],
-  },
-  inputWithLeftIcon: {
-    paddingLeft: 0,
-  },
-  inputWithRightIcon: {
-    paddingRight: 0,
-  },
-  leftIcon: {
-    paddingLeft: 16,
-  },
-  rightIcon: {
     paddingRight: 16,
   },
-  errorText: {
+  errorMessage: {
     fontFamily: 'Inter-Regular',
     fontSize: 12,
-    color: colors.error[500],
+    color: colors.danger?.[500] || '#EF4444', // Red color for error message
     marginTop: 4,
   },
 });

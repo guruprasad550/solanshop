@@ -1,40 +1,61 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { ArrowLeft, Mail, Lock } from 'lucide-react-native';
-import { colors } from '@/constants/colors';
-import { globalStyles } from '@/constants/styles';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
 import { useDispatch } from 'react-redux';
-import { loginSuccess } from '@/store/slices/authSlice';
+import { API_URL } from '@/constants/api';
+import { colors } from 'constants/colors';
+import { globalStyles } from 'constants/styles';
+import { Button } from 'components/ui/Button';
+import { Input } from 'components/ui/Input';
+import { loginSuccess } from 'store/slices/authSlice';
+
+const signInSchema = yup.object().shape({
+  email: yup.string().email('Please enter a valid email').required('Email is required'),
+  password: yup.string().required('Password is required'),
+});
 
 export default function SignInScreen() {
   const dispatch = useDispatch();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSignIn = async () => {
-    setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      dispatch(loginSuccess({
-        id: '1',
-        name: 'John Doe',
-        email: email,
-        avatar: 'https://images.pexels.com/photos/3763188/pexels-photo-3763188.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop',
-        preferences: {
-          notifications: true,
-          location: true,
-        },
-      }));
-      setIsLoading(false);
-      router.replace('/(tabs)');
-    }, 1500);
-  };
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+    validationSchema: signInSchema,
+    onSubmit: async (values, { setSubmitting }) => {
+      try {
+        const response = await fetch(`${API_URL}/api/auth/signin`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(values),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.msg || 'An unknown error occurred.');
+        }
+
+        // The backend returns { token, user: { id, name, email } }
+        // We can dispatch the user object to our Redux store.
+        // Note: The API doesn't provide avatar or preferences, so we omit them.
+        dispatch(loginSuccess(data.user));
+        router.replace('/(tabs)');
+
+      } catch (error: any) {
+        Alert.alert('Sign In Failed', error.message || 'An unexpected error occurred.');
+      } finally {
+        setSubmitting(false);
+      }
+    },
+  });
 
   const handleBackPress = () => {
     router.back();
@@ -61,27 +82,33 @@ export default function SignInScreen() {
           <View style={styles.form}>
             <Input
               label="Email"
-              value={email}
-              onChangeText={setEmail}
+              value={formik.values.email}
+              onChangeText={formik.handleChange('email')}
+              onBlur={formik.handleBlur('email')}
               placeholder="Enter your email"
               keyboardType="email-address"
               autoCapitalize="none"
               leftIcon={<Mail size={20} color={colors.neutral[400]} />}
+              error={formik.touched.email && Boolean(formik.errors.email)}
+              errorMessage={formik.touched.email ? formik.errors.email : undefined}
             />
             
             <Input
               label="Password"
-              value={password}
-              onChangeText={setPassword}
+              value={formik.values.password}
+              onChangeText={formik.handleChange('password')}
+              onBlur={formik.handleBlur('password')}
               placeholder="Enter your password"
               secureTextEntry
               leftIcon={<Lock size={20} color={colors.neutral[400]} />}
+              error={formik.touched.password && Boolean(formik.errors.password)}
+              errorMessage={formik.touched.password ? formik.errors.password : undefined}
             />
 
             <Button
               title="Sign In"
-              onPress={handleSignIn}
-              isLoading={isLoading}
+              onPress={() => formik.handleSubmit()}
+              isLoading={formik.isSubmitting}
               style={styles.signInButton}
             />
 

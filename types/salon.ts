@@ -8,7 +8,6 @@ export interface Salon {
   priceCategory: '$' | '$$' | '$$$' | '$$$$';
   distance: number;
   address: string;
-  phone: string;
   email: string;
   website?: string;
   coordinates: {
@@ -92,7 +91,6 @@ export interface User {
   name: string;
   email: string;
   avatar?: string;
-  phone?: string;
   preferences: {
     notifications: boolean;
     location: boolean;

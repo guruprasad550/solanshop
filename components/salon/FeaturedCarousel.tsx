@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import { FeaturedSalonCard } from './FeaturedSalonCard';
-import type { Salon } from '@/types/salon';
+import { Salon } from 'types/salon';
 
 interface FeaturedCarouselProps {
   salons: Salon[];

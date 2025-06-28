@@ -1,30 +1,69 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { ArrowLeft, User, Mail, Lock, Phone } from 'lucide-react-native';
-import { colors } from '@/constants/colors';
-import { globalStyles } from '@/constants/styles';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import { ArrowLeft, User, Mail, Lock } from 'lucide-react-native';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
+import { API_URL } from '@/constants/api';
+import { colors } from 'constants/colors';
+import { globalStyles } from 'constants/styles';
+import { Input } from 'components/ui/Input';
+import { Button } from 'components/ui/Button';
+
+const signUpSchema = yup.object().shape({
+  name: yup
+    .string()
+    .required('Full Name is required')
+    .matches(/^[a-zA-Z\s]+$/, 'Full Name can only contain letters and spaces'),
+  email: yup.string().email('Please enter a valid email').required('Email is required'),
+  password: yup
+    .string()
+    .min(6, 'Password must be at least 6 characters')
+    .required('Password is required'),
+});
 
 export default function SignUpScreen() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      email: '',
+      password: '',
+    },
+    validationSchema: signUpSchema,
+    onSubmit: async (values, { setSubmitting }) => {
+      try {
+        const response = await fetch(`${API_URL}/api/auth/signup`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: values.name,
+            email: values.email,
+            password: values.password,
+          }),
+        });
 
-  const handleSignUp = async () => {
-    setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      router.replace('/(auth)/signin');
-    }, 1500);
-  };
+        const data = await response.json();
+        if (!response.ok) {
+          if (data.errors && Array.isArray(data.errors)) {
+            const errorMessages = data.errors.map((err: any) => err.msg).join('\n');
+            throw new Error(errorMessages);
+          }
+          throw new Error(data.msg || 'An unknown error occurred during sign up.');
+        }
+
+        Alert.alert('Success', 'Account created successfully! Please sign in.');
+        router.replace('/(auth)/signin');
+      } catch (error: any) {
+        console.error('Sign Up Error:', error);
+        Alert.alert('Sign Up Failed', error.message || 'An unexpected error occurred.');
+      } finally {
+        setSubmitting(false);
+      }
+    },
+  });
 
   const handleBackPress = () => {
     router.back();
@@ -51,53 +90,44 @@ export default function SignUpScreen() {
           <View style={styles.form}>
             <Input
               label="Full Name"
-              value={name}
-              onChangeText={setName}
+              value={formik.values.name}
+              onChangeText={formik.handleChange('name')}
+              onBlur={formik.handleBlur('name')}
               placeholder="Enter your full name"
               leftIcon={<User size={20} color={colors.neutral[400]} />}
+              error={formik.touched.name && Boolean(formik.errors.name)}
+              errorMessage={formik.touched.name ? formik.errors.name : undefined}
             />
             
             <Input
               label="Email"
-              value={email}
-              onChangeText={setEmail}
+              value={formik.values.email}
+              onChangeText={formik.handleChange('email')}
+              onBlur={formik.handleBlur('email')}
               placeholder="Enter your email"
               keyboardType="email-address"
               autoCapitalize="none"
               leftIcon={<Mail size={20} color={colors.neutral[400]} />}
-            />
-            
-            <Input
-              label="Phone Number"
-              value={phone}
-              onChangeText={setPhone}
-              placeholder="Enter your phone number"
-              keyboardType="phone-pad"
-              leftIcon={<Phone size={20} color={colors.neutral[400]} />}
+              error={formik.touched.email && Boolean(formik.errors.email)}
+              errorMessage={formik.touched.email ? formik.errors.email : undefined}
             />
             
             <Input
               label="Password"
-              value={password}
-              onChangeText={setPassword}
+              value={formik.values.password}
+              onChangeText={formik.handleChange('password')}
+              onBlur={formik.handleBlur('password')}
               placeholder="Create a password"
               secureTextEntry
               leftIcon={<Lock size={20} color={colors.neutral[400]} />}
-            />
-            
-            <Input
-              label="Confirm Password"
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-              placeholder="Confirm your password"
-              secureTextEntry
-              leftIcon={<Lock size={20} color={colors.neutral[400]} />}
+              error={formik.touched.password && Boolean(formik.errors.password)}
+              errorMessage={formik.touched.password ? formik.errors.password : undefined}
             />
 
             <Button
               title="Create Account"
-              onPress={handleSignUp}
-              isLoading={isLoading}
+              onPress={() => formik.handleSubmit()}
+              isLoading={formik.isSubmitting}
               style={styles.signUpButton}
             />
           </View>

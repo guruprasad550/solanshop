@@ -4,9 +4,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { Sparkles, Calendar, MapPin } from 'lucide-react-native';
-import { colors } from '@/constants/colors';
-import { globalStyles } from '@/constants/styles';
-import { Button } from '@/components/ui/Button';
+import { colors } from 'constants/colors';
+import { Button } from 'components/ui/Button';
 
 const { width, height } = Dimensions.get('window');
 
